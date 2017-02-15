@@ -1,0 +1,13 @@
+{
+    "name": "Numberwang",
+    "version": "0.0.1",
+    "description": "Tells you when a number you've typed is numberwang",
+    "manifest_version": 2,
+    "icons": {},
+    "content_scripts": [{
+        "matches": ["http://*/*", "https://*/*"],
+        "css": ["numberwang.css"],
+        "js": ["numberwang.js"]
+    }],
+    "permissions": ["*://*/*"]
+}

@@ -1,0 +1,10 @@
+html.numberwang-ready {
+    perspective: 1200px;
+}
+
+body.numberwang-rotate-the-board {
+    backface-visibility: hidden;
+    transform: rotateY(1turn);
+    transform-style: preserve-3d;
+    transition: transform 5s linear;
+}
