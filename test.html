@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf8">
+    <title>Numberwang tests</title>
+    <style>
+        body {
+            display: flex;
+            margin: 1em auto;
+            width: 800px;
+        }
+        body > * {
+            margin: 0 1em;
+            flex-basis: 50%;
+        }
+        #log {
+            border: 1px dashed #cec;
+        }
+        .log-name {
+            color: #963;
+        }
+    </style>
+</head>
+<body>
+    <div id="inputs">
+        <div>
+            <label>Input: <input type="text"></label>
+        </div>
+        <div>
+            <label>Textarea: <textarea></textarea></label>
+        </div>
+        <div>
+            <label>Select: <select>
+                <option></option>
+                <option>123</option>
+                <option>This has no numbers</option>
+                <option value="4 and 20 blackbirds">Has a different value</option>
+                <option>-73.1896</option>
+                <option>There are ~365.2422 days per year</option>
+                <option>10983982475918273410873624757982092831</option>
+            </select></label>
+        </div>
+    </div>
+
+    <pre id="log"></pre>
+
+    <script>document.documentElement.setAttribute('data-numberwang-testing', '');</script>
+    <script src="numberwang.js"></script>
+    <script>
+        var logElem = document.getElementById('log');
+
+        function logger(e) {
+            var elem = document.createElement('div');
+            elem.classList.add('log-line');
+            elem.innerHTML = [
+                `<span class="log-name">${e.type.replace('numberwang-', '')}</span>`,
+                `<span class="log-value">${JSON.stringify(e.detail)}</span>`
+            ].join(' ');
+            logElem.append(elem);
+            console.log(e);
+        }
+
+        ['check', 'found'].forEach(type => {
+            document.addEventListener('numberwang-' + type, logger, false);
+        });
+    </script>
+</body>
+</html>
