@@ -100,12 +100,10 @@ if (!IS_TESTING) {
 		var shouldRotate = !!e.detail.rotate;
 		document.documentElement.classList.add(cssClasses.ready);
 		document.body.classList.remove(cssClasses.rotate);
+		chrome.runtime.sendMessage({ action: 'thatsNumberwang' });
 		if (shouldRotate) {
-			alert("That's numberwang!\n\nLet's rotate the board.");
+			alert('It’s time for WangerNumb!\n\nLet’s rotate the board.');
 			document.body.classList.add(cssClasses.rotate);
-		} else {
-			// TODO: Use browser notifications
-			alert("That's numberwang!");
 		}
-	}, false);
+	});
 }
