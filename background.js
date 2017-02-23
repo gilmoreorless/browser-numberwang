@@ -4,7 +4,7 @@ function notify() {
 		type: 'basic',
 		title: 'NumberWang',
 		message: 'That’s NumberWang!',
-		iconUrl: 'numberwang.jpg',
+		iconUrl: 'icons/numberwang-256.png',
 	});
 }
 
