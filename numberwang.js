@@ -20,7 +20,7 @@ function resetCount() {
 
 function resetNwCount() {
 	nwCount = 0;
-	targetNw = Math.floor(Math.random() * 3) + 2;
+	targetNw = Math.floor(Math.random() * 3) + 3;
 }
 
 function arraysAreEqual(arr1, arr2) {
@@ -94,14 +94,44 @@ if (!IS_TESTING) {
 	var cssClasses = {
 		ready: 'numberwang-ready',
 		rotate: 'numberwang-rotate-the-board',
+		otherSide: 'numberwang-rotate-the-other-side',
 	};
+
+	var gifFiles = [
+		'https://media4.giphy.com/media/rrOzTZt2EEhoI/giphy.gif',
+		'https://media4.giphy.com/media/FCDRI0twjxVvO/giphy.gif',
+		'https://media1.giphy.com/media/xoLGUcAdn24Kc/giphy.gif',
+		'https://media2.giphy.com/media/10gZNwuUuer5aU/giphy.gif',
+		'https://media1.giphy.com/media/dWm5HKuKjZTO/giphy.gif',
+		'http://i.imgur.com/hoqq85M.gif',
+		'http://i.imgur.com/gC3i2gd.gif',
+	];
+	var backupGifFiles = ['dancing-newsreader.gif', 'ski-mime.gif'];
+
+	var otherSide;
 
 	document.addEventListener('numberwang-found', function (e) {
 		var shouldRotate = !!e.detail.rotate;
 		document.documentElement.classList.add(cssClasses.ready);
 		document.body.classList.remove(cssClasses.rotate);
 		chrome.runtime.sendMessage({ action: 'thatsNumberwang' });
+
+		if (!otherSide) {
+			otherSide = document.createElement('div');
+			otherSide.className = cssClasses.otherSide;
+			document.body.appendChild(otherSide);
+		}
+
 		if (shouldRotate) {
+			let gifPath;
+			if (navigator.onLine) {
+				gifPath = gifFiles[Math.floor(Math.random() * gifFiles.length)];
+			} else {
+				let gifIndex = Math.floor(Math.random() * backupGifFiles.length);
+				gifPath = chrome.extension.getURL('gifs/' + backupGifFiles[gifIndex]);
+			}
+			// TODO: Wait until notification has appeared
+			otherSide.style.backgroundImage = `url(${gifPath})`;
 			alert('It’s time for WangerNumb!\n\nLet’s rotate the board.');
 			document.body.classList.add(cssClasses.rotate);
 		}

@@ -22,5 +22,8 @@
     "permissions": [
         "*://*/*",
         "notifications"
+    ],
+    "web_accessible_resources": [
+        "gifs/*.gif"
     ]
 }
