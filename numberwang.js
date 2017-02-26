@@ -117,9 +117,11 @@
 
 	document.addEventListener('numberwang-found', function (e) {
 		var shouldRotate = !!e.detail.rotate;
+		var msgOpts = { action: 'thatsNumberwang' };
+		var msgCallback = function () {};
+
 		document.documentElement.classList.add(cssClasses.ready);
 		document.body.classList.remove(cssClasses.rotate);
-		chrome.runtime.sendMessage({ action: 'thatsNumberwang' });
 
 		if (!otherSide) {
 			otherSide = document.createElement('div');
@@ -135,11 +137,17 @@
 				let gifIndex = Math.floor(Math.random() * backupGifFiles.length);
 				gifPath = chrome.extension.getURL('gifs/' + backupGifFiles[gifIndex]);
 			}
-			// TODO: Wait until notification has appeared
+			// Set the background image early to preload it while waiting for the notification to finish
 			otherSide.style.backgroundImage = `url(${gifPath})`;
-			alert('It’s time for WangerNumb!\n\nLet’s rotate the board.');
-			document.body.classList.add(cssClasses.rotate);
+
+			// Wait until notification has appeared before showing the alert
+			msgCallback = function () {
+				alert('It’s time for WangerNumb!\n\nLet’s rotate the board.');
+				document.body.classList.add(cssClasses.rotate);
+			};
 		}
+
+		chrome.runtime.sendMessage(msgOpts, msgCallback);
 	});
 
 })();
