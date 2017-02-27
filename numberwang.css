@@ -11,6 +11,7 @@ body.numberwang-rotate-the-board {
 
 .numberwang-rotate-the-other-side {
     backface-visibility: hidden;
+    background-color: black;
     background-size: cover;
     position: absolute;
     top: 0;
@@ -18,5 +19,5 @@ body.numberwang-rotate-the-board {
     right: 0;
     bottom: 0;
     transform: rotateY(0.5turn);
-    z-index: 1;
+    z-index: 100000;
 }

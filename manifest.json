@@ -1,7 +1,7 @@
 {
-    "name": "NumberWang",
-    "version": "0.0.1",
-    "description": "Tells you when a number you've typed is NumberWang",
+    "name": "Numberwang",
+    "version": "1.0.0",
+    "description": "Tells you when a number you've typed is Numberwang",
     "manifest_version": 2,
     "icons": {
         "16": "icons/n-16.png",

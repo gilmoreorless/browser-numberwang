@@ -142,7 +142,7 @@
 
 			// Wait until notification has appeared before showing the alert
 			msgCallback = function () {
-				alert('It’s time for WangerNumb!\n\nLet’s rotate the board.');
+				alert('It’s time for Wangernumb!\n\nLet’s rotate the board.');
 				document.body.classList.add(cssClasses.rotate);
 			};
 		}
