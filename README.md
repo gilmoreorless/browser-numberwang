@@ -13,7 +13,7 @@ That’s Numberwang!
 
 ## Demo
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dCxaxHobCBo" frameborder="0" allowfullscreen></iframe>
+[![Numberwang browser extension demo on YouTube](demo-screenshot.jpg)](https://www.youtube.com/watch?v=dCxaxHobCBo)
 
 
 ## Usage
