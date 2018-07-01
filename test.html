@@ -13,6 +13,9 @@
             margin: 0 1em;
             flex-basis: 50%;
         }
+        .input + .input {
+            margin-top: 0.5em;
+        }
         #log {
             border: 1px dashed #cec;
         }
@@ -23,13 +26,10 @@
 </head>
 <body>
     <div id="inputs">
-        <div>
-            <label>Input: <input type="text"></label>
-        </div>
-        <div>
+        <div class="input">
             <label>Textarea: <textarea></textarea></label>
         </div>
-        <div>
+        <div class="input">
             <label>Select: <select>
                 <option></option>
                 <option>123</option>
@@ -40,6 +40,9 @@
                 <option>10983982475918273410873624757982092831</option>
             </select></label>
         </div>
+        <div class="input" contenteditable>
+            This is a div with the contenteditable attribute.
+        </div>
     </div>
 
     <pre id="log"></pre>
@@ -47,6 +50,29 @@
     <script>document.documentElement.setAttribute('data-numberwang-testing', '');</script>
     <script src="numberwang.js"></script>
     <script>
+        // Generate inputs
+        var container = document.getElementById('inputs');
+        var types = [
+            'button', 'checkbox', 'color', 'date', 'datetime-local', 'email', 'file',
+            'image', 'month', 'number', 'password', 'radio', 'range', 'reset', 'search',
+            'submit', 'tel', 'text', 'time', 'url', 'week',
+        ];
+        types.forEach((type, i) => {
+            let div = document.createElement('div');
+            div.className = 'input';
+            let label = document.createElement('label');
+            let input = document.createElement('input');
+            input.type = type;
+            if (type !== 'file') {
+                input.value = i;
+            }
+            label.appendChild(document.createTextNode(`input[type=${type}]: `));
+            label.appendChild(input);
+            div.appendChild(label);
+            container.appendChild(div);
+        });
+
+        // Logging
         var logElem = document.getElementById('log');
 
         function logger(e) {

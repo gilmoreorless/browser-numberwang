@@ -82,8 +82,13 @@
 	resetCount();
 	resetNwCount();
 
+	var excludeInputTypes = new Set(['checkbox', 'color', 'file', 'password', 'radio', 'range']);
+
 	document.addEventListener('input', function (e) {
 		var elem = e.target;
+		if (elem.nodeName === 'SELECT' || elem.nodeName == 'INPUT' && excludeInputTypes.has(elem.type)) {
+			return;
+		}
 		setTimeout(() => {
 			parseElement(elem);
 		});
