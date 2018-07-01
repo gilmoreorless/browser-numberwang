@@ -45,7 +45,11 @@
 	}
 
 	function parseElement(elem) {
-		var numbers = extractNumbers(elem.value);
+		var value = elem.value;
+		if (value === undefined && elem.hasAttribute('contenteditable')) {
+			value = elem.textContent;
+		}
+		var numbers = extractNumbers(value);
 		if (!numbers.length) {
 			return;
 		}
