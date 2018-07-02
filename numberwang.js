@@ -60,9 +60,10 @@
 		elemValueCache.set(elem, numbers);
 
 		var diff = arrayDiff(numbers, existing);
-		diff.forEach(n => {
-			checkNumberwang(elem, n);
-		});
+		// Only check the first number to avoid DoS-wang when pasting a bunch of numbers at once
+		if (diff.length > 0) {
+			checkNumberwang(elem, diff[0]);
+		}
 	}
 
 	function checkNumberwang(elem, number) {
