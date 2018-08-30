@@ -1,23 +1,23 @@
 html.numberwang-ready {
-    perspective: 1200px;
+	perspective: 1200px;
 }
 
 body.numberwang-rotate-the-board {
-    backface-visibility: hidden;
-    transform: rotateY(1turn);
-    transform-style: preserve-3d;
-    transition: transform 10s linear;
+	backface-visibility: hidden;
+	transform: rotateY(1turn);
+	transform-style: preserve-3d;
+	transition: transform 10s linear;
 }
 
 .numberwang-rotate-the-other-side {
-    backface-visibility: hidden;
-    background-color: black;
-    background-size: cover;
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transform: rotateY(0.5turn);
-    z-index: 100000;
+	backface-visibility: hidden;
+	background-color: black;
+	background-size: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	transform: rotateY(0.5turn);
+	z-index: 100000;
 }

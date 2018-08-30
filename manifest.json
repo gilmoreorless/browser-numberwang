@@ -1,29 +1,29 @@
 {
-    "name": "Numberwang",
-    "version": "1.0.1",
-    "description": "Tells you when a number you've typed is Numberwang",
-    "manifest_version": 2,
-    "icons": {
-        "16": "icons/n-16.png",
-        "32": "icons/n-32.png",
-        "48": "icons/n-48.png",
-        "128": "icons/n-128.png",
-        "256": "icons/n-256.png"
-    },
-    "background": {
-        "scripts": ["background.js"],
-        "persistent": false
-    },
-    "content_scripts": [{
-        "matches": ["http://*/*", "https://*/*"],
-        "css": ["numberwang.css"],
-        "js": ["numberwang.js"]
-    }],
-    "permissions": [
-        "*://*/*",
-        "notifications"
-    ],
-    "web_accessible_resources": [
-        "gifs/*.gif"
-    ]
+	"name": "Numberwang",
+	"version": "1.0.1",
+	"description": "Tells you when a number you've typed is Numberwang",
+	"manifest_version": 2,
+	"icons": {
+		"16": "icons/n-16.png",
+		"32": "icons/n-32.png",
+		"48": "icons/n-48.png",
+		"128": "icons/n-128.png",
+		"256": "icons/n-256.png"
+	},
+	"background": {
+		"scripts": ["background.js"],
+		"persistent": false
+	},
+	"content_scripts": [{
+		"matches": ["http://*/*", "https://*/*"],
+		"css": ["numberwang.css"],
+		"js": ["numberwang.js"]
+	}],
+	"permissions": [
+		"*://*/*",
+		"notifications"
+	],
+	"web_accessible_resources": [
+		"gifs/*.gif"
+	]
 }
