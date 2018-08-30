@@ -1,34 +1,53 @@
+/***** BROWSER COMMS - Common across background page and content scripts *****/
+
+class SetMap extends Map {
+	get(key) {
+		let value = super.get(key);
+		return value || new Set();
+	}
+
+	add(key, value) {
+		const values = this.get(key);
+		values.add(value);
+		this.set(key, values);
+	}
+}
+
+const messageActions = new SetMap();
+
+function sendMessage(name, opts = {}, tabId = null) {
+	let msgOpts = Object.assign({ action: name }, opts);
+	if (tabId) {
+		chrome.tabs.sendMessage(tabId, msgOpts);
+	} else {
+		chrome.runtime.sendMessage(msgOpts);
+	}
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if (message.action && messageActions.has(message.action)) {
+		messageActions.get(message.action).forEach(listener => {
+			listener(message, sender, sendResponse);
+		});
+	}
+});
+
+
+/***** NUMBER CHECKING - Only runs in content scripts *****/
+
 (function () {
 
-	var IS_TESTING = document.documentElement.hasAttribute('data-numberwang-testing');
-
-	var curCount, targetCount;
-	var nwCount, targetNw;
-
-	var elemValueCache = new WeakMap();
-
-	function trigger(name, elem, value) {
-		var event = new CustomEvent(`numberwang-${name}`, {
-			detail: value,
-			bubbles: true
-		});
-		(elem || document).dispatchEvent(event);
+	// Quick check to see if this is running in a content script
+	if (chrome.runtime.onInstalled !== undefined) {
+		return;
 	}
 
-	function resetCount() {
-		curCount = 0;
-		targetCount = Math.floor(Math.random() * 20) + 2;
-	}
-
-	function resetNwCount() {
-		nwCount = 0;
-		targetNw = Math.floor(Math.random() * 3) + 3;
-	}
+	const elemValueCache = new WeakMap();
 
 	function arraysAreEqual(arr1, arr2) {
 		if (!arr1 || !arr2) return false;
 		if (arr1.length !== arr2.length) return false;
-		var hasDiff = arr1.some((n, i) => arr2[i] !== n);
+		const hasDiff = arr1.some((n, i) => arr2[i] !== n);
 		return !hasDiff;
 	}
 
@@ -37,60 +56,38 @@
 	}
 
 	function extractNumbers(str) {
-		var numbers = String(str).trim()
-			.split(/[^0-9.\-]+/)
+		return String(str).trim()
+			.split(/[^0-9.-]+/)
 			.map(n => parseFloat(n))
 			.filter(n => !isNaN(n));
-		return numbers;
 	}
 
 	function parseElement(elem) {
-		var value = elem.value;
+		let value = elem.value;
 		if (value === undefined && elem.hasAttribute('contenteditable')) {
 			value = elem.textContent;
 		}
-		var numbers = extractNumbers(value);
+		const numbers = extractNumbers(value);
 		if (!numbers.length) {
 			return;
 		}
-		var existing = elemValueCache.get(elem) || [];
+		const existing = elemValueCache.get(elem) || [];
 		if (arraysAreEqual(numbers, existing)) {
 			return;
 		}
 		elemValueCache.set(elem, numbers);
 
-		var diff = arrayDiff(numbers, existing);
+		const diff = arrayDiff(numbers, existing);
 		// Only check the first number to avoid DoS-wang when pasting a bunch of numbers at once
 		if (diff.length > 0) {
-			checkNumberwang(elem, diff[0]);
+			sendMessage('checkNumber', { number: diff[0] });
 		}
 	}
 
-	function checkNumberwang(elem, number) {
-		curCount++;
-		trigger('check', elem, { number });
-		if (curCount === targetCount) {
-			thatsNumberwang(elem, number);
-		}
-	}
-
-	function thatsNumberwang(elem, number) {
-		nwCount++;
-		var rotate = nwCount === targetNw;
-		trigger('found', elem, { number, count: nwCount, rotate });
-		if (rotate) {
-			resetNwCount();
-		}
-		resetCount();
-	}
-
-	resetCount();
-	resetNwCount();
-
-	var excludeInputTypes = new Set(['checkbox', 'color', 'file', 'password', 'radio', 'range']);
+	const excludeInputTypes = new Set(['checkbox', 'color', 'file', 'password', 'radio', 'range']);
 
 	document.addEventListener('input', function (e) {
-		var elem = e.target;
+		const elem = e.target;
 		if (elem.nodeName === 'SELECT' || elem.nodeName == 'INPUT' && excludeInputTypes.has(elem.type)) {
 			return;
 		}
@@ -100,19 +97,15 @@
 	}, false);
 
 
-	///// INTERACTIONS
+	/***** BOARD ROTATION *****/
 
-	if (IS_TESTING) {
-		return;
-	}
-
-	var cssClasses = {
+	const cssClasses = {
 		ready: 'numberwang-ready',
 		rotate: 'numberwang-rotate-the-board',
 		otherSide: 'numberwang-rotate-the-other-side',
 	};
 
-	var gifFiles = [
+	const gifFiles = [
 		'https://media4.giphy.com/media/rrOzTZt2EEhoI/giphy.gif',
 		'https://media4.giphy.com/media/FCDRI0twjxVvO/giphy.gif',
 		'https://media1.giphy.com/media/xoLGUcAdn24Kc/giphy.gif',
@@ -121,15 +114,11 @@
 		'http://i.imgur.com/hoqq85M.gif',
 		'http://i.imgur.com/gC3i2gd.gif',
 	];
-	var backupGifFiles = ['dancing-newsreader.gif', 'ski-mime.gif'];
+	const backupGifFiles = ['dancing-newsreader.gif', 'ski-mime.gif'];
 
-	var otherSide;
+	let otherSide;
 
-	document.addEventListener('numberwang-found', function (e) {
-		var shouldRotate = !!e.detail.rotate;
-		var msgOpts = { action: 'thatsNumberwang' };
-		var msgCallback = function () {};
-
+	messageActions.add('thatsNumberwang', function () {
 		document.documentElement.classList.add(cssClasses.ready);
 		document.body.classList.remove(cssClasses.rotate);
 
@@ -138,26 +127,23 @@
 			otherSide.className = cssClasses.otherSide;
 			document.body.appendChild(otherSide);
 		}
+	});
 
-		if (shouldRotate) {
-			let gifPath;
-			if (navigator.onLine) {
-				gifPath = gifFiles[Math.floor(Math.random() * gifFiles.length)];
-			} else {
-				let gifIndex = Math.floor(Math.random() * backupGifFiles.length);
-				gifPath = chrome.extension.getURL('gifs/' + backupGifFiles[gifIndex]);
-			}
-			// Set the background image early to preload it while waiting for the notification to finish
-			otherSide.style.backgroundImage = `url(${gifPath})`;
-
-			// Wait until notification has appeared before showing the alert
-			msgCallback = function () {
-				alert('It’s time for Wangernumb!\n\nLet’s rotate the board.');
-				document.body.classList.add(cssClasses.rotate);
-			};
+	messageActions.add('rotateTheBoard', function () {
+		let gifPath;
+		if (navigator.onLine) {
+			gifPath = gifFiles[Math.floor(Math.random() * gifFiles.length)];
+		} else {
+			let gifIndex = Math.floor(Math.random() * backupGifFiles.length);
+			gifPath = chrome.extension.getURL('gifs/' + backupGifFiles[gifIndex]);
 		}
-
-		chrome.runtime.sendMessage(msgOpts, msgCallback);
+		// Set the background image early to preload it
+		otherSide.style.backgroundImage = `url(${gifPath})`;
+		// Add a short delay to allow the background page's notification to show up
+		setTimeout(() => {
+			alert('It’s time for Wangernumb!\n\nLet’s rotate the board.');
+			document.body.classList.add(cssClasses.rotate);
+		}, 1000);
 	});
 
 })();

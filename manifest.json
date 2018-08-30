@@ -1,6 +1,6 @@
 {
 	"name": "Numberwang",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"description": "Tells you when a number you've typed is Numberwang",
 	"manifest_version": 2,
 	"icons": {
@@ -11,7 +11,7 @@
 		"256": "icons/n-256.png"
 	},
 	"background": {
-		"scripts": ["background.js"],
+		"scripts": ["numberwang.js", "background.js"],
 		"persistent": false
 	},
 	"content_scripts": [{

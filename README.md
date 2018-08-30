@@ -46,7 +46,7 @@ To install the extension in Firefox:
 
 ## Obligatory legal bits
 
-This code is open source under the [MIT license](LICENSE) – © 2017 Gilmore Davidson.
+This code is open source under the [MIT license](LICENSE) – © Gilmore Davidson.
 
 “Numberwang” name and concept is probably copyright of the British Broadcasting Corporation. I assume.
 

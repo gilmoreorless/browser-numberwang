@@ -47,8 +47,34 @@
 
 	<pre id="log"></pre>
 
-	<script>document.documentElement.setAttribute('data-numberwang-testing', '');</script>
+	<script>
+		// Mock Chrome extension APIs for local testing
+		(function () {
+			var mockRuntimeListener = function () {};
+
+			window.chrome || (window.chrome = {});
+			chrome.runtime = {
+				onMessage: {
+					addListener(callback) {
+						mockRuntimeListener = callback;
+					},
+				},
+				sendMessage(details) {
+					mockRuntimeListener(details, { tab: { id: 12345 } }, function () {});
+				},
+			};
+			chrome.tabs = {
+				sendMessage(tabId, details) {
+					mockRuntimeListener(details, {}, function () {});
+				},
+			};
+			chrome.notifications = {
+				create: function () {},
+			};
+		})();
+	</script>
 	<script src="numberwang.js"></script>
+	<script src="background.js"></script>
 	<script>
 		// Generate inputs
 		var container = document.getElementById('inputs');
@@ -79,15 +105,17 @@
 			var elem = document.createElement('div');
 			elem.classList.add('log-line');
 			elem.innerHTML = [
-				`<span class="log-name">${e.type.replace('numberwang-', '')}</span>`,
-				`<span class="log-value">${JSON.stringify(e.detail)}</span>`
+				`<span class="log-name">${e.action}</span>`,
+				`<span class="log-value">${JSON.stringify(e.number)}</span>`
 			].join(' ');
 			logElem.append(elem);
 			console.log(e);
 		}
 
-		['check', 'found'].forEach(type => {
-			document.addEventListener('numberwang-' + type, logger, false);
+		messageActions.delete('thatsNumberwang');
+		messageActions.delete('rotateTheBoard');
+		['checkNumber', 'thatsNumberwang', 'rotateTheBoard'].forEach(type => {
+			messageActions.add(type, logger);
 		});
 	</script>
 </body>
