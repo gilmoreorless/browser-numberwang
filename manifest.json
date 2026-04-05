@@ -1,8 +1,8 @@
 {
 	"name": "Numberwang",
-	"version": "1.1.0",
+	"version": "1.2.0",
 	"description": "Tells you when a number you've typed is Numberwang",
-	"manifest_version": 2,
+	"manifest_version": 3,
 	"icons": {
 		"16": "icons/n-16.png",
 		"32": "icons/n-32.png",
@@ -11,19 +11,19 @@
 		"256": "icons/n-256.png"
 	},
 	"background": {
-		"scripts": ["numberwang.js", "background.js"],
-		"persistent": false
+		"service_worker": "background.js"
 	},
 	"content_scripts": [{
 		"matches": ["http://*/*", "https://*/*"],
 		"css": ["numberwang.css"],
 		"js": ["numberwang.js"]
 	}],
+	"host_permissions": ["<all_urls>"],
 	"permissions": [
-		"*://*/*",
 		"notifications"
 	],
-	"web_accessible_resources": [
-		"gifs/*.gif"
-	]
+	"web_accessible_resources": [{
+		"resources": ["gifs/*.gif"],
+		"matches": ["<all_urls>"]
+	}]
 }

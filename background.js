@@ -1,4 +1,5 @@
 /* global messageActions, sendMessage */
+importScripts('./numberwang.js');
 
 /***** NUMBER CHECKING *****/
 

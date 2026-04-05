@@ -71,6 +71,8 @@
 			chrome.notifications = {
 				create: function () {},
 			};
+			// No-op for testing
+			window.importScripts = () => {};
 		})();
 	</script>
 	<script src="numberwang.js"></script>
