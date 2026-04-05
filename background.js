@@ -1,4 +1,4 @@
-/* global messageActions, sendMessage */
+/* This brings in messageActions and sendMessage; can't be bothered refactoring */
 importScripts('./numberwang.js');
 
 /***** NUMBER CHECKING *****/
